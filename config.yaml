@@ -1,0 +1,19 @@
+global:
+  log_level: "INFO"
+  warcraft_vod_directory: "D:\\Videos\\Warcraft"
+  youtube_video:
+    description: "Killed at {time} on {difficulty}"
+    tags:
+      - "Warcraft"
+      - "Kill"
+      - "{difficulty}"
+    visibility: "unlisted"
+  authentication:
+    directory: "./auth"
+    client_secrets_file: "client_secret.json"
+    token_file: "token.json"
+  database:
+    directory: "."
+    name: "wow_vods.db"
+    table_name: "wow_vods"
+    

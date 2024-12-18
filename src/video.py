@@ -3,6 +3,9 @@ from dataclasses import dataclass as dc
 from datetime import datetime
 from pathlib import Path
 
+from config import settings
+from logger import *
+
 
 @dc
 class Video:
@@ -39,6 +42,15 @@ class Video:
     @property
     def description(self):
         return f'Killed at {self.killed_at} on {self.difficulty}'
+    
+    @property
+    def tags(self) -> list[str]:
+        cfg_tags = settings.youtube_video.tags
+        for tag in cfg_tags:
+            if tag == r'{difficulty}':
+                cfg_tags.remove(tag)
+                cfg_tags.append(self.difficulty)
+        return cfg_tags
     
     def __repr__(self):
         return f'Video({self.title}, {self.killed_at}, {self.difficulty})'

@@ -3,6 +3,8 @@ import time
 from pathlib import Path
 from typing import Generator
 
+from logger import *
+
 
 class FileWatcher:
     """ Watches a directory for new files and uploads them to a service
@@ -14,7 +16,7 @@ class FileWatcher:
                  db_path: Path= Path('files.db')
                  ) -> None:
         self.directory: Path = directory
-        self.db_path: str = db_path
+        self.db_path: Path = db_path
         self.conn = sqlite3.connect(self.db_path)
         self.create_table()
 
@@ -60,7 +62,7 @@ class FileWatcher:
         Upload the file if it has not been found before.
         Update the database to mark the file as 'found'.
         """
-        print(f'Watching for new files in {self.directory}...')
+        get_logger().info(f'Watching for new files in {self.directory}')
         while True:
             current_files: set[Path] = set(self.directory.iterdir())
             for file in current_files:
@@ -69,9 +71,10 @@ class FileWatcher:
                 
                 yield file
                 
-            print('Sleeping for 15 seconds...')
+            get_logger().debug('Sleeping for 15 seconds...')
             time.sleep(15)
-    
+            
+    # -- Utility functions
     def _remove_indexes(self, start_index: int, end_index: int) -> None:
         """ Utility function for removing indexes from the database. 
 

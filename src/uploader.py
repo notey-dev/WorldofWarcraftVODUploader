@@ -7,6 +7,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
+from config import settings
+
 ROOT_DIR = Path(__file__).resolve().parent.parent
 TOKEN_PATH = Path(ROOT_DIR, 'auth', 'token.json')
 
@@ -57,7 +59,7 @@ class Uploader:
             'categoryId': '22'
         },
         'status': {
-            'privacyStatus': 'unlisted'
+            'privacyStatus': settings.video_visibility
         }
     }
         media = MediaFileUpload(file_path, 

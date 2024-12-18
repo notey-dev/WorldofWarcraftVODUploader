@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "youtube-uploader"
-version = "0.1.0"
-description = "An automated script that watches a directory and uploads files to a specified YouTube channel using the YouTube API."
+version = "0.0.2"
+description = "A World of Warcraft app that automatically uploads WarcraftRecorder vods to YouTube"
 authors = ["Notey <info@notey.dev>"]
 readme = "README.md"
 
@@ -10,7 +10,8 @@ python = "^3.12"
 google-auth = "^2.6.0"
 google-auth-oauthlib = "^0.4.6"
 google-api-python-client = "^2.31.0"
-watchdog = "^3.0.0"
+dynaconf = "^3.2.6"
+pydantic = "^2.10.4"
 
 [build-system]
 requires = ["poetry-core"]
