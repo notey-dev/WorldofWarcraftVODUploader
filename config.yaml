@@ -1,6 +1,11 @@
 global:
   log_level: "INFO"
-  warcraft_vod_directory: "D:\\Videos\\Warcraft"
+  warcraft_vods:
+    directory: "D:\\Videos\\Warcraft"
+    file_types: 
+      - ".mp4"
+    search_keywords: 
+      - "Kill"
   youtube_video:
     description: "Killed at {time} on {difficulty}"
     tags:

@@ -59,7 +59,7 @@ class Uploader:
             'categoryId': '22'
         },
         'status': {
-            'privacyStatus': settings.video_visibility
+            'privacyStatus': settings.youtube.visibility
         }
     }
         media = MediaFileUpload(file_path, 

@@ -45,7 +45,7 @@ class Video:
     
     @property
     def tags(self) -> list[str]:
-        cfg_tags = settings.youtube_video.tags
+        cfg_tags = settings.youtube.tags
         for tag in cfg_tags:
             if tag == r'{difficulty}':
                 cfg_tags.remove(tag)
@@ -60,8 +60,10 @@ class Video:
         
         Criteria:
             - The file exists.
-            - The file is a .mp4 file.
-            - The file name contains 'Kill'.
+            - The file is a valid extension.
+                (from the settings file)
+            - The file name contains any of the keywords.
+                (from the settings file
 
         Args:
             file (Path): Path object representing the file.
@@ -69,4 +71,17 @@ class Video:
         Returns:
             bool: True if the file is valid, False otherwise.
         """
-        return self.file.name.endswith('.mp4') and 'Kill' in self.file.stem
+        # Check if the file exists
+        if not self.file.exists():
+            return False
+        
+        # Check file type
+        if not self.file.suffix in settings.warcraft.file_types:
+            return False
+
+        # Check if the file name contains the search keywords
+        if not any([kw in self.file.stem 
+                    for kw in settings.warcraft.search_keywords]):
+            return False
+        
+        return True

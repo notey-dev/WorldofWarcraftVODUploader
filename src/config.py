@@ -4,9 +4,17 @@ from typing import Literal
 from dynaconf import Dynaconf
 from pydantic import BaseModel, DirectoryPath, Field
 
-SRC_DIR = Path(__file__).resolve().parent
-ROOT_DIR = SRC_DIR.parent
+from constants import *
 
+
+class WarcraftVods(BaseModel):
+    directory: DirectoryPath
+    file_types: list[str]
+    search_keywords: list[str]
+    
+    @property
+    def path(self) -> Path:
+        return Path(self.directory)
 
 class Database(BaseModel):
     directory: DirectoryPath
@@ -42,9 +50,10 @@ class YoutubeVideo(BaseModel):
     tags: list[str]
 
 class Settings(BaseModel):
-    warcraft_vod_directory_: DirectoryPath = Field(alias='warcraft_vod_directory')
+    # warcraft_vod_directory_: DirectoryPath = Field(alias='warcraft_vod_directory')
     log_level: Literal['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
-    youtube_video: YoutubeVideo
+    warcraft: WarcraftVods = Field(alias='warcraft_vods')
+    youtube: YoutubeVideo = Field(alias='youtube_video')
     auth: Authentication = Field(alias='authentication')
     database: Database
     
