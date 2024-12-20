@@ -1,4 +1,4 @@
-# YouTube Uploader
+# World of Warcraft Vod Uploader
 
 This project is an automated script that watches a specified directory for new video files and uploads them to a designated YouTube channel using the YouTube API.
 
@@ -11,15 +11,18 @@ This project is an automated script that watches a specified directory for new v
 ## Project Structure
 
 ```
-youtube-uploader
+worldofwarcraftvoduploader
 ├── src
 │   ├── main.py          # Entry point of the application
 │   ├── uploader.py      # Handles YouTube API interactions
 │   ├── watcher.py       # Monitors the directory for new files
-│   └── utils
-│       └── __init__.py  # Utility functions and constants
+│   ├── video.py         # Dataclass for video metadata
+│   ├── config.py        # Configuration management
+│   ├── logger.py        # Logger setup
+│   ├── constants.py     # Constants used in the application
 ├── requirements.txt      # Project dependencies
 ├── pyproject.toml        # Poetry configuration
+├── config.yaml           # Application configuration
 └── README.md             # Project documentation
 ```
 

@@ -8,14 +8,19 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
 from config import settings
+from logger import *
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 TOKEN_PATH = Path(ROOT_DIR, 'auth', 'token.json')
 
+log: Logger = get_logger(__name__)
+
 class Uploader:
-    def __init__(self, client_secrets_file: Path, 
-                 api_service_name='youtube',
-                 api_version='v3'):
+    def __init__(self, 
+                 client_secrets_file: Path = settings.auth.client_secrets, 
+                 api_service_name: str = 'youtube',
+                 api_version: str = 'v3'
+                 ) -> None:
         self.client_secrets_file: Path = client_secrets_file
         self.api_service_name: str = api_service_name
         self.api_version: str = api_version
@@ -63,8 +68,8 @@ class Uploader:
         }
     }
         media = MediaFileUpload(file_path, 
-                                chunksize=-1, 
-                                resumable=True
+                                resumable=True, 
+                                chunksize=4 * 1024 * 1024
                             )
         request = self.api_service.videos().insert(
             part="snippet,status",
@@ -72,9 +77,14 @@ class Uploader:
             media_body=media
         )
         response = None
+        prev_percent = 0
         while response is None:
             status, response = request.next_chunk()
-            if status:
-                print(f"Uploaded {int(status.progress() * 100)}%")
-        print(f"Video uploaded successfully: {response['id']}")
+            if not status:
+                continue
+            percent: int = int(status.progress() * 100)
+            if percent % 5 == 0 and percent != prev_percent:
+                log.info(f"Uploaded {percent}%")
+                prev_percent: int = percent
+        log.info(f"Video uploaded successfully: {response['id']}")
         return response['id']

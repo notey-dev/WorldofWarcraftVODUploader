@@ -1,13 +1,16 @@
 global:
   log_level: "INFO"
   warcraft_vods:
-    directory: "D:\\Videos\\Warcraft"
+    directory: "D:\\Videos\\WoW"
     file_types: 
       - ".mp4"
     search_keywords: 
       - "Kill"
+    difficulties:
+      # - "Heroic"
+      - "Mythic"
   youtube_video:
-    description: "Killed at {time} on {difficulty}"
+    description: "Killed at {killed_at} on {difficulty}"
     tags:
       - "Warcraft"
       - "Kill"
@@ -20,5 +23,4 @@ global:
   database:
     directory: "."
     name: "wow_vods.db"
-    table_name: "wow_vods"
     
