@@ -1,7 +1,7 @@
 global:
   log_level: "INFO"
   warcraft_vods:
-    directory: "D:\\Videos\\WoW"
+    directory: "D:\\Videos\\Warcraft"
     file_types: 
       - ".mp4"
     search_keywords: 

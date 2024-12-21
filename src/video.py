@@ -81,15 +81,14 @@ class Video:
         Returns:
             str: Formatted description for the YouTube video
         """
+        unformatted_str: str = settings.youtube.description
         supported_tags: dict = {
-            '{difficulty}': self.difficulty,
-            '{killed_at}': self.killed_at,
-            '{killed_on}': self.killed_on
+            'difficulty': self.difficulty,
+            'killed_at': self.killed_at,
+            'killed_on': self.killed_on
         }
         
-        return settings.youtube.description.format_map(
-            DefaultDict(supported_tags)
-        )
+        return unformatted_str.format_map(DynamicDict(supported_tags))
     
     @property
     def tags(self) -> list[str]:
@@ -146,10 +145,10 @@ class Video:
         
         return True
 
-class DefaultDict(dict):
+class DynamicDict(dict):
     """Helper class to provide default values for missing keys
     
     Used for dynamic string formatting from the config file
     """
     def __missing__(self, key: str) -> str:
-        return '{' + key + '}'
+        raise Exception(f'Key not supported: {key}')

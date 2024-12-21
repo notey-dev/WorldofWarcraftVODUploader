@@ -51,7 +51,11 @@ def run() -> None:
 
 def main() -> None:
     log.info('Starting the World of Warcraft VOD uploader...')
-    run()
+    try:
+        run()
+    except KeyboardInterrupt:
+        log.info('Shutting down the World of Warcraft VOD uploader...')
+        exit()
 
 if __name__ == "__main__":
     main()
