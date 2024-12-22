@@ -1,8 +1,7 @@
-import sqlite3
 import tempfile
 from pathlib import Path
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from watcher import FileWatcher
 
@@ -64,19 +63,15 @@ class TestFileWatcher(TestCase):
         )
         self.assertIsNone(cursor.fetchone())
 
-    # @patch('watcher.time.sleep', return_value=None)
-    # def test_start_watching(self, mock_sleep):
-    #     # Create some test files
-    #     file1 = self.test_dir_path / 'file1.txt'
-    #     file2 = self.test_dir_path / 'file2.txt'
-    #     file1.touch()
-    #     file2.touch()
-        
-    #     generator = self.watcher.start_watching()
-    #     self.assertEqual(next(generator), file1)
-    #     self.assertEqual(next(generator), file2)
-        
-    #     # Mark file1 as tracked and check that it is not yielded again
-    #     self.watcher.start_tracking(str(file1))
-    #     generator = self.watcher.start_watching()
-    #     self.assertEqual(next(generator), file2)
+    @patch('watcher.time.sleep', return_value=None)
+    def test_start_watching(self, mock_sleep):
+        # Create some test files
+        file1 = self.test_dir_path / 'file1.txt'
+        file2 = self.test_dir_path / 'file2.txt'
+        file1.touch()
+        file2.touch()
+    
+        generator = self.watcher.start_watching()
+        detected_files = sorted([next(generator), next(generator)])
+        expected_files = sorted([file1, file2])
+        self.assertEqual(detected_files, expected_files)

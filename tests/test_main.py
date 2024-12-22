@@ -4,14 +4,11 @@ from unittest.mock import MagicMock
 import pytest
 
 from main import run, upload_video
-from uploader import Uploader
-from video import Video
-from watcher import FileWatcher
 
 
 @pytest.fixture
 def mock_settings(monkeypatch):
-    mock_settings = MagicMock()
+    mock_setting = MagicMock()
     mock_settings.youtube.visibility = 'unlisted'
     mock_settings.log_level = 'DEBUG'
     monkeypatch.setattr('config.settings', mock_settings)
@@ -35,7 +32,7 @@ def mock_file_watcher(monkeypatch):
     monkeypatch.setattr('main.FileWatcher', mock_file_watcher)
     return mock_file_watcher
 
-def test_upload_video(mock_settings, mock_uploader, mock_video):
+def test_upload_video(mock_settings,  mock_uploader, mock_video):
     # Create mock instances
     mock_uploader_instance = mock_uploader.return_value
     mock_video_instance = mock_video.return_value
@@ -56,7 +53,7 @@ def test_upload_video(mock_settings, mock_uploader, mock_video):
         tags=['test', 'video']
     )
 
-def test_run(mock_settings, mock_uploader, mock_file_watcher):
+def test_run(mock_settings, mock_uploader, mock_file_watcher, mock_video):
      # Create mock instances
     mock_uploader_instance = mock_uploader.return_value
     mock_file_watcher_instance = mock_file_watcher.return_value
