@@ -9,8 +9,9 @@ token.json
 poetry.lock
 __pycache__/
 
-# VSCode
+# Directories
 .vscode
+.pytest_cache
 
 # Log files
 *.log
