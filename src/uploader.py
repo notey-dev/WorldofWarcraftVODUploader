@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import Any, Optional
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -10,28 +11,27 @@ from googleapiclient.http import MediaFileUpload
 from config import settings
 from logger import *
 
-ROOT_DIR = Path(__file__).resolve().parent.parent
-TOKEN_PATH = Path(ROOT_DIR, 'auth', 'token.json')
-
 log: Logger = get_logger(__name__)
 
 class Uploader:
     def __init__(self, 
                  client_secrets_file: Path = settings.auth.client_secrets, 
+                 token: Path = settings.auth.token,
                  api_service_name: str = 'youtube',
                  api_version: str = 'v3'
                  ) -> None:
         self.client_secrets_file: Path = client_secrets_file
+        self.token: Path = token
         self.api_service_name: str = api_service_name
         self.api_version: str = api_version
         self.scopes = ["https://www.googleapis.com/auth/youtube.upload"]
         self.api_service = self.get_authenticated_service()
 
-    def get_authenticated_service(self):
-        creds = None
-        if os.path.exists(TOKEN_PATH):
-            creds = Credentials.from_authorized_user_file(
-                        TOKEN_PATH, 
+    def get_authenticated_service(self) -> Any:
+        creds: Optional[Credentials] = None
+        if os.path.exists(self.token) and os.path.getsize(self.token) > 0:
+            creds: Credentials = Credentials.from_authorized_user_file(
+                        self.token, 
                         self.scopes
                     )
         if not creds or not creds.valid:
@@ -43,7 +43,7 @@ class Uploader:
                         self.scopes
                     )
                 creds = flow.run_local_server(port=0)
-            with open(TOKEN_PATH, 'w') as token:
+            with open(self.token, 'w') as token:
                 token.write(creds.to_json())
         return build(self.api_service_name, 
                      self.api_version, 
