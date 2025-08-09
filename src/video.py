@@ -9,10 +9,11 @@ from config import settings
 
 log: Logger = getLogger(__name__)
 
+
 @dc
 class Video:
     file: Path
-    
+
     # -- Properties --
     @property
     def title(self) -> str:
@@ -22,10 +23,10 @@ class Video:
             str: yyyy-mm-dd - {Character} - {Boss} [{difficulty}]
         """
         # Remove time code
-        title = re.sub(r'\b\d{2}-\d{2}-\d{2}\b', '', self.file.stem)
+        title = re.sub(r"\b\d{2}-\d{2}-\d{2}\b", "", self.file.stem)
         # Remove (Kill) from the title
-        return title.replace(' (Kill)', '').strip().replace('  ', ' ')
-    
+        return title.replace(" (Kill)", "").strip().replace("  ", " ")
+
     @property
     def killed_on(self) -> datetime:
         """Get the date the video was created
@@ -33,10 +34,9 @@ class Video:
         Returns:
             datetime: yyyy-mm-dd
         """
-        match = re.search(r'(\d{4}-\d{2}-\d{2}) (\d{2}-\d{2}-\d{2})', 
-                        self.file.stem)
-        return match.group(1) or ''
-    
+        match = re.search(r"(\d{4}-\d{2}-\d{2}) (\d{2}-\d{2}-\d{2})", self.file.stem)
+        return match.group(1) or ""
+
     @property
     def killed_at(self) -> str:
         """Get the time the video was created
@@ -44,15 +44,14 @@ class Video:
         Returns:
             str: hh:mm AM/PM
         """
-        time_code_match = re.search(r'\b\d{2}-\d{2}-\d{2}\b', 
-                                    self.file.stem)
-        time_code = time_code_match.group(0) if time_code_match else ''
+        time_code_match = re.search(r"\b\d{2}-\d{2}-\d{2}\b", self.file.stem)
+        time_code = time_code_match.group(0) if time_code_match else ""
         if time_code:
-            time_obj = datetime.strptime(time_code, '%H-%M-%S')
-            return time_obj.strftime('%I:%M %p')
-        
+            time_obj = datetime.strptime(time_code, "%H-%M-%S")
+            return time_obj.strftime("%I:%M %p")
+
     @property
-    def difficulty(self) -> Literal['Normal', 'Heroic', 'Mythic']:
+    def difficulty(self) -> Literal["Normal", "Heroic", "Mythic"]:
         """Get the difficulty of the raid fight
 
         Raises:
@@ -61,15 +60,15 @@ class Video:
         Returns:
             str: The difficulty of the raid fight
         """
-        if '[M]' in self.file.name:
-            return 'Mythic'
-        elif '[HC]' in self.file.name:
-            return 'Heroic'
-        elif '[N]' in self.file.name:
-            return 'Normal'
-        
-        raise ValueError(f'Difficulty not found: {self.file.name}')
-    
+        if "[M]" in self.file.name:
+            return "Mythic"
+        elif "[HC]" in self.file.name:
+            return "Heroic"
+        elif "[N]" in self.file.name:
+            return "Normal"
+
+        raise ValueError(f"Difficulty not found: {self.file.name}")
+
     @property
     def description(self) -> str:
         """Get the description for the YouTube video
@@ -83,13 +82,13 @@ class Video:
         """
         unformatted_str: str = settings.youtube.description
         supported_tags: dict = {
-            'difficulty': self.difficulty,
-            'killed_at': self.killed_at,
-            'killed_on': self.killed_on
+            "difficulty": self.difficulty,
+            "killed_at": self.killed_at,
+            "killed_on": self.killed_on,
         }
-        
+
         return unformatted_str.format_map(DynamicDict(supported_tags))
-    
+
     @property
     def tags(self) -> list[str]:
         """Get the tags for the YouTube video
@@ -101,18 +100,18 @@ class Video:
         """
         cfg_tags = settings.youtube.tags
         for tag in cfg_tags:
-            if tag == r'{difficulty}':
+            if tag == r"{difficulty}":
                 cfg_tags.remove(tag)
                 cfg_tags.append(self.difficulty)
         return cfg_tags
-    
+
     # -- Methods --
     def __repr__(self):
-        return f'{self.title}, {self.killed_on}, {self.killed_at}, {self.difficulty}'
-    
+        return f"{self.title}, {self.killed_on}, {self.killed_at}, {self.difficulty}"
+
     def is_valid(self) -> bool:
         """Check if the file meets the criteria for uploading.
-        
+
         Criteria:
             - The file exists.
             - The file is a valid extension.
@@ -129,26 +128,27 @@ class Video:
         # Check if the file exists
         if not self.file.exists():
             return False
-        
+
         # Check file type
-        if not self.file.suffix in settings.warcraft.file_types:
+        if self.file.suffix not in settings.warcraft.file_types:
             return False
-        
+
         # Check if the file name contains the search keywords
-        if not any([kw in self.file.stem 
-                    for kw in settings.warcraft.search_keywords]):
+        if not any([kw in self.file.stem for kw in settings.warcraft.search_keywords]):
             return False
-        
+
         # Check difficulty
         if self.difficulty not in settings.warcraft.difficulties:
             return False
-        
+
         return True
+
 
 class DynamicDict(dict):
     """Helper class to provide default values for missing keys
-    
+
     Used for dynamic string formatting from the config file
     """
+
     def __missing__(self, key: str) -> str:
-        raise Exception(f'Key not supported: {key}')
+        raise Exception(f"Key not supported: {key}")

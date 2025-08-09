@@ -3,7 +3,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from uploader import Uploader
+from uploaders.youtube import Uploader
 
 
 class TestUploader(unittest.TestCase):
